@@ -5,8 +5,8 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-indice-generos',
   imports: [RouterLink, MatButtonModule],
-  templateUrl: './indice-generos.component.html',
-  styleUrl: './indice-generos.component.css'
+  templateUrl: './index-genre.component.html',
+  styleUrl: './index-genre.component.css'
 })
 export class IndiceGenerosComponent {
 

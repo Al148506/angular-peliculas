@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LandingPageComponent } from './landing-page/landing-page.component';
-import { IndiceGenerosComponent } from './generos/indice-generos/indice-generos.component';
+import { IndiceGenerosComponent } from './genres/index-genre/index-genre.component';
 import { CreateGenresComponent } from './genres/create-genres/create-genres.component';
 import { ActorsIndexComponent } from './actors/actors-index/actors-index.component';
 import { CreateActorComponent } from './actors/create-actor/create-actor.component';
