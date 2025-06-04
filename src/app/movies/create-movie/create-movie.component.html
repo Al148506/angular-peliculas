@@ -1,0 +1,10 @@
+<h2>Create movie</h2>
+<app-form-movies
+  [genreNotSelected]="genreNotSelected"
+  [genreSelected]="genreSelected"
+  [cinemasNotSelected]="cinemasNotSelected"
+  [cinemasSelected]="cinemasSelected"
+  (postform)="saveChanges($event)"
+  [actorsSelected]="actorsSelected"
+>
+</app-form-movies>
