@@ -1,2 +1,6 @@
-<p>Create actor</p>
-<app-form-actors (postForm)="saveChanges($event)"></app-form-actors>
+<app-create-entity
+  [title]="'Create Actor'"
+  [routeIndex]="'/actors'"
+  [form]="formActors"
+>
+</app-create-entity>

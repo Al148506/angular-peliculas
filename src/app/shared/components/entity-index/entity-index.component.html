@@ -1,0 +1,59 @@
+<h2>{{ title }}</h2>
+<button mat-flat-button color="primary" routerLink="{{ createRoute }}">
+  Create new
+</button>
+
+<app-generic-list [listado]="entities">
+  <ng-container content>
+    <table
+      mat-table
+      [dataSource]="entities"
+      class="mat-elevation-z8 elements-index"
+    >
+      @for (column of columnsToShow; track $index){ @if (column === 'actions') {
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <a
+            mat-flat-button
+            color="accent"
+            [routerLink]="editRoute + '/' + element.id"
+            >Edit</a
+          >
+          <button
+            mat-flat-button
+            class="dark-warn-button"
+            [swal]="{
+              title: 'Confirmation',
+              text: 'Do you want to delete this register?',
+              showCancelButton: true
+            }"
+            (confirm)="delete(element.id)"
+          >
+            Delete
+          </button>
+        </td>
+      </ng-container>
+      }@else{
+      <ng-container matColumnDef="{{ column }}">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ capitalizeFirstLetter(column) }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+      </ng-container>
+      } }
+      <tr mat-header-row *matHeaderRowDef="columnsToShow"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnsToShow"></tr>
+    </table>
+    <mat-paginator
+      showFirstLastButtons
+      [length]="totalRegistersQuantity"
+      [pageIndex]="pagination.page - 1"
+      [pageSize]="pagination.recordsPerPage"
+      [pageSizeOptions]="[5, 10, 50]"
+      class="mat-elevation-z8"
+      (page)="updatePagination($event)"
+    >
+    </mat-paginator>
+  </ng-container>
+</app-generic-list>

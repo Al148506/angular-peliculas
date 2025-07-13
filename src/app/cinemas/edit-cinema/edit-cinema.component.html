@@ -1,2 +1,6 @@
-<h2>Edit Cinema</h2>
-<app-form-cinemas (postForm)="saveChanges($event)" [model]="cinema"></app-form-cinemas>
+<app-edit-entity
+  [title]="'Edit Cinema'"
+  [routeIndex]="'/cinemas'"
+  [form]="formCinemas"
+  [id] = "id">
+</app-edit-entity>

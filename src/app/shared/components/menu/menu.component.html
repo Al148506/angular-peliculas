@@ -1,39 +1,49 @@
 <mat-toolbar>
-    <span>
-        <a mat-button routerLink="/">
-            <mat-icon>local_movies</mat-icon>
-            Home
-        </a>
-    </span>
-    <div>
-        <a mat-button routerLink="movies/filter">
-            <mat-icon>search</mat-icon>
-            Search Movies
-        </a>
+  <span>
+    <a mat-button routerLink="/">
+      <mat-icon>local_movies</mat-icon>
+      Home
+    </a>
+  </span>
+  <div>
+    <a mat-button routerLink="movies/filter">
+      <mat-icon>search</mat-icon>
+      Search Movies
+    </a>
+  </div>
+  <app-authorized rol="admin">
+    <ng-container authorized>
+      <div>
+        <a mat-button routerLink="genres"> Genres </a>
+      </div>
+      <div>
+        <a mat-button routerLink="actors"> Actors </a>
+      </div>
+      <div>
+        <a mat-button routerLink="cinemas"> Cinemas </a>
+      </div>
+      <div>
+        <a mat-button routerLink="cinemas/create"> Create Cinema </a>
+      </div>
+      <div>
+        <a mat-button routerLink="movies/create"> Create Movie </a>
+      </div>
+       <div>
+        <a mat-button routerLink="users"> Users </a>
+      </div>
+    </ng-container>
+  </app-authorized>
+  <div class="space"></div>
+  <app-authorized style="display: inline">
+    <div authorized>
+      <span class="salute"
+        >Hello, {{ securityService.obtainFieldJWT("email") }}</span
+      >
+      <a mat-button (click)="securityService.logout()">Logout</a>
     </div>
-    <div>
-        <a mat-button routerLink="genres">
-            Genres
-        </a>
+    <div notAuthorized>
+      <a mat-button routerLink="login">Login</a>
+      <a mat-button routerLink="register">Sign up</a>
     </div>
-    <div>
-        <a mat-button routerLink="actors">
-            Actors
-        </a>
-    </div>
-    <div>
-        <a mat-button routerLink="cinemas">
-            Cinemas
-        </a>
-    </div>
-    <div>
-        <a mat-button routerLink="cinemas/create">
-            Create Cinema
-        </a>
-    </div>
-    <div>
-        <a mat-button routerLink="movies/create">
-            Create Movie
-        </a>
-    </div>
+  </app-authorized>
 </mat-toolbar>

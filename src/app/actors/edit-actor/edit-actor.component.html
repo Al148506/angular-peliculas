@@ -1,2 +1,5 @@
-<h2>Edit Actor</h2>
-<app-form-actors (postForm)="saveChanges($event)" [model]="actor"></app-form-actors>
+<app-edit-entity
+  [title]="'Edit Actor'"
+  [routeIndex]="'/actors'"
+  [form]="formActors"
+  [id] = "id"></app-edit-entity>

@@ -17,8 +17,8 @@
         </mat-select>
     </mat-form-field>
     <div>
-        <mat-checkbox [formControl]="form.controls.upcomingReleases">
-            Upcoming Releases
+        <mat-checkbox [formControl]="form.controls.comingSoon">
+            Coming Soon
         </mat-checkbox>
     </div>
     <div>
@@ -35,4 +35,8 @@
     
 </form>
 
-<app-listado-peliculas [peliculas] = "movies"></app-listado-peliculas>
+<app-list-movies [movies] = "movies"></app-list-movies>
+<mat-paginator showFirstLastButtons [length]="totalrecordsQuantity" [pageIndex]="pagination.page"
+[pageSize]="pagination.recordsPerPage" [pageSizeOptions]="[5,10,50]" class="mat-elevation-z8"
+(page)="updatePagination($event)">
+</mat-paginator>

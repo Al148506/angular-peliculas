@@ -5,10 +5,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ListadoPeliculasComponent } from '../index-movie/index-movie.component';
 import { FilterMovie } from './filterMovie';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { ListMoviesComponent } from '../list-movies/list-movies';
+import { GenreDTO } from '../../genres/genres';
+import { MovieCreationDTO, MovieDTO } from '../movies';
+import { GenresService } from '../../genres/genres.service';
+import { MoviesService } from '../movies.service';
+import { PaginationDTO } from '../../shared/models/PaginationDTO';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { debounce, debounceTime } from 'rxjs';
 @Component({
   selector: 'app-filter-movies',
   imports: [
@@ -18,39 +25,58 @@ import { ActivatedRoute } from '@angular/router';
     MatInputModule,
     MatSelectModule,
     MatCheckboxModule,
-    ListadoPeliculasComponent,
+    ListMoviesComponent,
+    MatPaginatorModule,
   ],
   templateUrl: './filter-movies.component.html',
   styleUrl: './filter-movies.component.css',
 })
 export class FilterMoviesComponent implements OnInit {
+  genresService = inject(GenresService);
+  moviesService = inject(MoviesService);
+  pagination: PaginationDTO = { page: 1, recordsPerPage: 10 };
+  totalrecordsQuantity!: number;
+
   ngOnInit(): void {
-    this.readUrlParameters();
-    this.searchMovies(this.form.value as FilterMovie);
-    this.form.valueChanges.subscribe((values) => {
-      this.movies = this.moviesOriginal;
-      this.searchMovies(values as FilterMovie);
-      this.searchParametersUrl(values as FilterMovie);
+    this.genresService.obtainAll().subscribe((genres)  => {
+      this.genres = genres;
+      this.readUrlParameters();
+      this.searchMovies(this.form.value as FilterMovie);
+
+       // Subscription for all values in the form
+       
+      this.form.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe((values) => {
+        console.log(values);
+        this.searchMovies(values as FilterMovie);
+        this.searchParametersUrl(values as FilterMovie);
+      });
+    // 👉 Subscription in specific fields for mutual exclusion:
+
+        this.form.get('comingSoon')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.form.get('inCinemas')?.setValue(false, { emitEvent: false });
+      }
+    });
+
+    this.form.get('inCinemas')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.form.get('comingSoon')?.setValue(false, { emitEvent: false });
+      }
+    });
     });
   }
 
   searchMovies(values: FilterMovie) {
-    if (values.title) {
-      this.movies = this.movies.filter((movie) =>
-        movie.titulo.toLowerCase().includes(values.title.toLowerCase())
-      );
-    }
-    if (values.genreId) {
-      this.movies = this.movies.filter(
-        (movie) => movie.genre.indexOf(values.genreId) !== -1
-      );
-    }
-    if (values.upcomingReleases) {
-      this.movies = this.movies.filter((movie) => movie.upcomingReleases);
-    }
-    if (values.inCinemas) {
-      this.movies = this.movies.filter((movie) => movie.inCinemas);
-    }
+    values.page = this.pagination.page;
+    values.recordsPerPage = this.pagination.recordsPerPage;
+
+    this.moviesService.filter(values).subscribe((response) => {
+      this.movies = response.body as MovieDTO[];
+      const header = response.headers.get('total-records-quantity') as string;
+      this.totalrecordsQuantity = parseInt(header, 10);
+    });
   }
   searchParametersUrl(values: FilterMovie) {
     let queryString = [];
@@ -60,8 +86,8 @@ export class FilterMoviesComponent implements OnInit {
     if (values.genreId !== 0) {
       queryString.push(`genreId=${values.genreId}`);
     }
-    if (values.upcomingReleases) {
-      queryString.push(`upcomingReleases=${values.upcomingReleases}`);
+    if (values.comingSoon) {
+      queryString.push(`upcomingReleases=${values.comingSoon}`);
     }
     if (values.inCinemas) {
       queryString.push(`inCinemas=${values.inCinemas}`);
@@ -73,96 +99,40 @@ export class FilterMoviesComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.form.patchValue({
         title: params['title'] || '',
-        genreId: params['genreId'] || 0,
-        upcomingReleases: params['upcomingReleases'] || false,
+        genreId: params['genreId'] ? Number(params['genreId']) : 0, // 👈 Conversión aquí
+        comingSoon: params['comingSoon'] || false,
         inCinemas: params['inCinemas'] || false,
       });
     });
   }
 
   clean() {
-    this.form.reset();
-    this.movies = this.moviesOriginal;
+    this.form.patchValue({
+      title: '',
+      genreId: 0,
+      comingSoon: false,
+      inCinemas: false,
+    });
   }
+
+  updatePagination(data: PageEvent) {
+    this.pagination = {
+      page: data.pageIndex + 1,
+      recordsPerPage: data.pageSize,
+    };
+    this.searchMovies(this.form.value as FilterMovie);
+  }
+
   private formBuilder = inject(FormBuilder);
   private location = inject(Location);
   private activatedRoute = inject(ActivatedRoute);
+
   form = this.formBuilder.group({
     title: '',
     genreId: 0,
-    upcomingReleases: false,
+    comingSoon: false,
     inCinemas: false,
   });
-  genres = [
-    { id: 1, name: 'Action' },
-    { id: 2, name: 'Comedy' },
-    { id: 3, name: 'Drama' },
-    { id: 4, name: 'Horror' },
-    { id: 5, name: 'Sci-Fi' },
-  ];
-  moviesOriginal = [
-    {
-      titulo: 'Inside Out 2',
-      fechaLanzamiento: new Date(),
-      precio: 1400.99,
-      poster:
-        'https://upload.wikimedia.org/wikipedia/en/f/f7/Inside_Out_2_poster.jpg?20240514232832',
-      genre: [5, 4],
-      upcomingReleases: false,
-      inCinemas: false,
-    },
-    {
-      titulo: 'Moana 2',
-      fechaLanzamiento: new Date('2016-05-03'),
-      precio: 300.99,
-      poster:
-        'https://upload.wikimedia.org/wikipedia/en/7/73/Moana_2_poster.jpg',
-      genre: [1, 2],
-      upcomingReleases: false,
-      inCinemas: true,
-    },
-    {
-      titulo: 'Bad Boys: Ride or Die',
-      fechaLanzamiento: new Date('2016-05-03'),
-      precio: 300.99,
-      poster:
-        'https://upload.wikimedia.org/wikipedia/en/8/8b/Bad_Boys_Ride_or_Die_%282024%29_poster.jpg',
-      genre: [3],
-      upcomingReleases: false,
-      inCinemas: true,
-    },
-
-    {
-      titulo: 'Deadpool & Wolverine',
-      fechaLanzamiento: new Date('2016-05-03'),
-      precio: 300.99,
-      poster:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Deadpool_%26_Wolverine_poster.jpg/220px-Deadpool_%26_Wolverine_poster.jpg',
-      genre: [1, 3, 4, 5],
-      upcomingReleases: true,
-      inCinemas: false,
-    },
-    {
-      titulo: 'Oppenheimer',
-      fechaLanzamiento: new Date('2016-05-03'),
-      precio: 300.99,
-      poster:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/4/4a/Oppenheimer_%28film%29.jpg/220px-Oppenheimer_%28film%29.jpg',
-      genre: [3, 4],
-      upcomingReleases: true,
-      inCinemas: false,
-    },
-    {
-      titulo: 'The Flash',
-      fechaLanzamiento: new Date('2016-05-03'),
-      precio: 300.99,
-      poster:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/e/ed/The_Flash_%28film%29_poster.jpg/220px-The_Flash_%28film%29_poster.jpg',
-      genre: [4],
-      upcomingReleases: false,
-      inCinemas: true,
-    },
-  ];
-
-  movies = this.moviesOriginal;
+  genres!: GenreDTO[];
+  movies!: MovieDTO[];
 }

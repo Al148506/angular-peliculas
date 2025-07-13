@@ -2,19 +2,19 @@
   <mat-form-field appearance="outline">
     <mat-label>Title</mat-label>
     <input matInput [formControl]="form.controls.title" />
-    <mat-error>{{ obtainErrorFieldTitle }}</mat-error>
+    <mat-error>{{ obtainErrorFieldTitle() }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <input
       matInput
       [matDatepicker]="picker"
-      [formControl]="form.controls.launchDate"
+      [formControl]="form.controls.releaseDate"
       placeholder="Choose a date"
     />
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
-    <mat-error>{{ obtainErrorFieldLaunchDate }}</mat-error>
+    <mat-error>{{ obtainErrorFieldReleaseDate() }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
@@ -42,7 +42,6 @@
 
   <h4>Select the Actors</h4>
   <app-autocomplete-actors [actorsSelected]="actorsSelected">
-    
   </app-autocomplete-actors>
 
   <div class="button-container">

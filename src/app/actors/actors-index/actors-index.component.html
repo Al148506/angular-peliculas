@@ -1,2 +1,5 @@
-<h2>Actors</h2>
-<button mat-flat-button routerLink="/actors/create">Create Actor</button>
+<app-entity-index
+  [title]="'Actors'"
+  [createRoute]="'/actors/create'"
+  [editRoute]="'/actors/edit'"
+></app-entity-index>

@@ -1,2 +1,5 @@
-<h2>Create Genre</h2>
-<app-form-genre (postForm) = "saveChanges($event)"></app-form-genre>
+<app-create-entity
+  [title]="'Create Genre'"
+  [routeIndex]="'genres'"
+  [form]="formGenres">
+</app-create-entity>

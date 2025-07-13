@@ -1,0 +1,48 @@
+<div class="movies_container">
+  <ng-container *ngIf="movies && movies.length > 0; else noMovies">
+    <div *ngFor="let movie of movies; let i = index" class="movie_container">
+      <a [routerLink]="['/movie', movie.id]">
+        <img
+          *ngIf="movie.poster; else defaultImage"
+          [src]="movie.poster"
+          width="169"
+          height="250"
+        />
+      </a>
+      <ng-template #defaultImage>
+        <img src="default.jpg" width="169" height="250" />
+      </ng-template>
+
+      <p>
+        <a [routerLink]="['/movie', movie.id]">{{ movie.title }}</a>
+      </p>
+      <app-authorized rol="admin">
+        <ng-container authorized>
+          <div>
+            <a
+              mat-flat-button
+              class="button"
+              [routerLink]="['/movies/edit', movie.id]"
+              >Edit</a
+            >
+            <a
+              mat-flat-button
+              class="button warn"
+              [swal]="{
+                title: 'Confirm',
+                text: 'Do you want to delete this record?',
+                showCancelButton: true
+              }"
+              (confirm)="delete(movie.id)"
+              >Delete</a
+            >
+          </div>
+        </ng-container>
+      </app-authorized>
+    </div>
+  </ng-container>
+
+  <ng-template #noMovies>
+    <p class="no-movies">There are no movies to show.</p>
+  </ng-template>
+</div>

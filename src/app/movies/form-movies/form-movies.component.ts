@@ -52,7 +52,13 @@ import { ActorAutoCompleteDTO } from '../../actors/actors';
 export class FormMoviesComponent implements OnInit {
   ngOnInit(): void {
     if (this.model !== undefined) {
-      this.form.patchValue(this.model);
+      const modelCopy = {
+        ...this.model,
+        releaseDate: this.model.releaseDate
+          ? new Date(this.model.releaseDate)
+          : null,
+      };
+      this.form.patchValue(modelCopy);
     }
   }
 
@@ -79,7 +85,7 @@ export class FormMoviesComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   form = this.formBuilder.group({
     title: ['', { validators: [Validators.required] }],
-    launchDate: new FormControl<Date | null>(null, {
+    releaseDate: new FormControl<Date | null>(null, {
       validators: [Validators.required],
     }),
     trailer: '',
@@ -94,7 +100,7 @@ export class FormMoviesComponent implements OnInit {
       return;
     }
     const movie = this.form.value as MovieCreationDTO;
-    movie.launchDate = moment(movie.launchDate).toDate();
+    movie.releaseDate = moment(movie.releaseDate).toDate();
     const genresIds = this.genreSelected.map((val) => val.key);
     const cinemasIds = this.cinemasSelected.map((val) => val.key);
     movie.genresIds = genresIds;
@@ -109,10 +115,10 @@ export class FormMoviesComponent implements OnInit {
     }
     return '';
   }
-  obtainErrorFieldLaunchDate(): string {
-    let field = this.form.controls.title;
+  obtainErrorFieldReleaseDate(): string {
+    let field = this.form.controls.releaseDate;
     if (field.hasError('required')) {
-      return 'The field title is required';
+      return 'The field release date is required';
     }
     return '';
   }

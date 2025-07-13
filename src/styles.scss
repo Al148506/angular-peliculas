@@ -16,11 +16,49 @@
     )
 }
 
-.warn{
-    @include mat.theme(
-        (
-            color: mat.$red-palette
-        )
-    )
+.dark-warn-button {
+  background-color: #8B0000;
+  color: white;
+
+  &:hover {
+    background-color: #a10000;
+  }
 }
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: fit-content;
+}
+
+form button {
+  margin-right: 1rem;
+}
+
+mat-form-field {
+  width: 100%;
+  max-width: 500px;
+  display: block !important;
+  margin-top: 1rem;
+}
+
+.button-container {
+  display: flex;
+  margin-top: 1rem;
+}
+
+.elements-index {
+  margin-top: 1rem;
+}
+.elements-index a {
+  margin-right: 1rem;
+}
+
+
    

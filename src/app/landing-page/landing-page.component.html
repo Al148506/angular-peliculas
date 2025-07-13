@@ -1,7 +1,13 @@
 <h2>En cines</h2>
 
-<app-listado-peliculas [peliculas] = "peliculasEnCines" ></app-listado-peliculas>
+<app-list-movies
+  [movies]="moviesInCinemas"
+  (deleted)="movieDeleted()"
+></app-list-movies>
 
 <h2>Proximos estrenos</h2>
 
-<app-listado-peliculas [peliculas] = "peliculasProximosEstrenos"></app-listado-peliculas>
+<app-list-movies
+  [movies]="moviesComingSoon"
+  (deleted)="movieDeleted()"
+></app-list-movies>

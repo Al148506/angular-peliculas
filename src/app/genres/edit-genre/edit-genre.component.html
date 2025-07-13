@@ -1,2 +1,5 @@
-<p>Edit genre with id: {{id}}</p>
-<app-form-genre [model]="genre" (postForm)="saveChanges($event)"></app-form-genre>
+<app-edit-entity
+  [title]="'Edit Genre'"
+  [routeIndex]="'/genres'"
+  [form]="formGenre"
+  [id] = "id"></app-edit-entity>

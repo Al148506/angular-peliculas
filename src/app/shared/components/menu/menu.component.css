@@ -1,7 +1,20 @@
 mat-toolbar {
-  background-color:crimson;
-  position:sticky;
+  background-color: crimson;
+  position: sticky;
   position: -webkit-sticky;
-  top:0;
+  top: 0;
   z-index: 1000;
+}
+
+app-authorized {
+  display: flex;
+}
+
+.space {
+  flex: 1 1 auto;
+}
+
+.salute {
+  font-size: 16px;
+  display: inline;
 }

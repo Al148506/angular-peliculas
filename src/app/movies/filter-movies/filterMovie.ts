@@ -1,6 +1,8 @@
 export interface FilterMovie {
   title: string;
     genreId: number;
-    upcomingReleases: boolean;
+    comingSoon: boolean;
     inCinemas: boolean;
+    page: number;
+    recordsPerPage: number;
 }
